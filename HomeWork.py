@@ -1,26 +1,53 @@
-class FibonacciIterator:
-    def __init__(self, n):
-        self.n = n
-        self.current = 0
-        self.next = 1
-        self.count = 0
+class Fibonacci:
+    def __init__(self):
+        self.prev = 0
+        self.curr = 1
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        if self.count >= self.n:
-            raise StopIteration
-        result = self.current
-        self.current, self.next = self.next, self.current + self.next
-        self.count += 1
-        return result
+        value = self.curr
+        self.prev, self.curr = self.curr, self.prev + self.curr
+        return value
 
 
-fibonacci = FibonacciIterator(10)
-while True:
+fib = Fibonacci()
+# for i in range(10):
+#     print(next(fib))
+
+# try:
+#     while True:
+#         print(next(fib))
+# except StopIteration:
+#     pass
+
+
+def fibonacci_gen():
+    prev, curr = 0, 1
+    while True:
+        yield curr
+        prev, curr = curr, prev + curr
+
+
+fib2 = fibonacci_gen()
+
+
+def programming_languages_gen():
     try:
-        num = next(fibonacci)
-        print(num)
-    except StopIteration:
-        break
+        while True:
+            language = yield
+            print("Programming language: " + language)
+    except GeneratorExit:
+        print("generator closed")
+
+
+gen = programming_languages_gen()
+next(gen)
+
+languages = ["Python", "Java", "C", "C++", "JavaScript", "Ruby", "PHP", "Swift", "Go", "Rust"]
+
+for i in languages:
+    gen.send(i)
+
+gen.close()
